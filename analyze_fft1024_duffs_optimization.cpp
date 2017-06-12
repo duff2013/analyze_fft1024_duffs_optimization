@@ -29,9 +29,9 @@
 #include "utility/dspinst.h"
 #include "fft_optimized.h"
 
-static inline void extract_2_for_1_fft_outputs(uint32_t *fft_buf, int32_t *buf1, int32_t *buf2) __attribute__((always_inline, unused));
-static inline uint32_t *combine_ffts(uint32_t *in1, uint32_t *in2, uint32_t *in3, uint32_t *in4) __attribute__((always_inline, unused));
-static inline void interleave_block_to_buffers(void *destination1, void *destination2, const void *source, const void *window) __attribute__((always_inline, unused));
+//static inline void extract_2_for_1_fft_outputs(uint32_t *fft_buf, int32_t *buf1, int32_t *buf2) __attribute__((always_inline, unused));
+//static inline uint32_t *combine_ffts(uint32_t *in1, uint32_t *in2, uint32_t *in3, uint32_t *in4) __attribute__((always_inline, unused));
+//static inline void interleave_block_to_buffers(void *destination1, void *destination2, const void *source, const void *window) __attribute__((always_inline, unused));
 
 void AudioAnalyzeFFT1024_Duffs_Optimization::update(void) {
     audio_block_t *block;
@@ -78,13 +78,16 @@ void AudioAnalyzeFFT1024_Duffs_Optimization::update(void) {
             blocklist[7] = block;
             interleave_block_to_buffers( buffer1+0x180, buffer2+0x180, blocklist[6]->data, window+0x300 );
             interleave_block_to_buffers( buffer1+0x1C0, buffer2+0x1C0, blocklist[7]->data, window+0x380 );
+            // get two ffts which are actually 4 ffts because of how we packed the buffers
             arm_cfft_radix4_q15( &fft_inst, (q15_t*)buffer1 );
             arm_cfft_radix4_q15( &fft_inst, (q15_t*)buffer2 );
+            // TODO: need to reuse buffer1 and buffer2
             extract_2_for_1_fft_outputs( ( uint32_t * )buffer1, partialBuffer1, partialBuffer2 );
             extract_2_for_1_fft_outputs( ( uint32_t * )buffer2, partialBuffer3, partialBuffer4 );
+            // TODO: use buffer1 and buffer2 instead
             uint32_t *fft_result = combine_ffts( ( uint32_t * )partialBuffer1, ( uint32_t * )partialBuffer2, ( uint32_t * )partialBuffer3, ( uint32_t * )partialBuffer4 );
             // needs to be optimized?
-            for (int k = 0; k < 512; k++) {
+            for ( int k = 0; k < 512; k++ ) {
                 int16_t r = ( int16_t )( fft_result[k] & 0xFFFF );
                 int16_t i = ( int16_t )( fft_result[k] >> 16 );
                 r >>= 2;

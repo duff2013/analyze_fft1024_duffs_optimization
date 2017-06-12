@@ -5,8 +5,8 @@
 #######################################
 # Datatypes (KEYWORD1)
 #######################################
-analyze_fft1024_fast	KEYWORD1
-AudioAnalyzeFFT1024_Duffs_Optimization	KEYWORD1
+analyze_fft1024_fast    KEYWORD1
+AudioAnalyzeFFT1024_Duffs_Optimization  KEYWORD1
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
