@@ -84,14 +84,14 @@ static uint32_t *combine_ffts( uint32_t *in1, uint32_t *in2, uint32_t *in3, uint
         
         // Two complex numbers x=a+ib and y=c+id are multiplied as follows:
         // x*y = (a+ib)(c+id) = ac+ibc+iad-bd = (ac-bd)+i(ad+bc).
-        realData = __SMLSD ( input_2[idx], coef_1[i], realData );
-        imagData = __SMLADX( input_2[idx], coef_1[i], imagData );
+        realData = __SMLSD ( input_2[idx], coef_1[idx], realData );
+        imagData = __SMLADX( input_2[idx], coef_1[idx], imagData );
         
-        realData = __SMLSD ( input_3[idx], coef_2[i], realData );
-        imagData = __SMLADX( input_3[idx], coef_2[i], imagData );
+        realData = __SMLSD ( input_3[idx], coef_2[idx], realData );
+        imagData = __SMLADX( input_3[idx], coef_2[idx], imagData );
         
-        realData = __SMLSD ( input_4[idx], coef_3[i], realData );
-        imagData = __SMLADX( input_4[idx], coef_3[i], imagData );
+        realData = __SMLSD ( input_4[idx], coef_3[idx], realData );
+        imagData = __SMLADX( input_4[idx], coef_3[idx], imagData );
         
         // This is the final fft output -> real bottom 16 | imag top 16
         OutputBuffer_i32[i] = ( signed_saturate_rshift( realData, 32, 14 ) + ( input_1[idx] & 0xFFFF ) ) | ( ( signed_saturate_rshift( imagData, 32, 14 ) + ( input_1[idx] >> 16 ) ) << 16 );
@@ -99,8 +99,8 @@ static uint32_t *combine_ffts( uint32_t *in1, uint32_t *in2, uint32_t *in3, uint
     
     return ( uint32_t * )OutputBuffer_i32;
 }
-// TODO: probably slower but will we see... not working yet
-static uint32_t *combine_ffts_new( uint16_t *in1, uint16_t *in2, uint16_t *in3, uint16_t *in4 ) {
+// TODO: probably slower but we will see... not working yet
+/*static uint32_t *combine_ffts_new( uint16_t *in1, uint16_t *in2, uint16_t *in3, uint16_t *in4 ) {
     const uint16_t *input_1 = in1;
     const uint16_t *input_2 = in2;
     const uint16_t *input_3 = in3;
@@ -116,7 +116,7 @@ static uint32_t *combine_ffts_new( uint16_t *in1, uint16_t *in2, uint16_t *in3, 
     arm_cmplx_mult_cmplx_q15((q15_t *)input_4, (q15_t *)coeff3_256_Q15_t, (q15_t *)OutputBuffer_i32+512, 512);
     
     return ( uint32_t * )OutputBuffer_i32;
-}
+}*/
 //----------------------------------------------------------------------------------------------
 static void interleave_block_to_buffers( void *destination1, void *destination2, const void *source, const void *window ) {
     int16_t *dst1 = ( int16_t * )destination1;

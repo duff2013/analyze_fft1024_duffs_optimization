@@ -1,2 +1,3 @@
-Optimized version of Teensyduino Audio library's FFT algorithm: version 1.2.
+Optimized version of Teensyduino Audio library's 1024 pt FFT algorithm:
 ---
+version 1.3.
