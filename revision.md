@@ -1,3 +1,6 @@
+><b>Updated (11/15/17 v1.3.1)</b><br>
+* Fixed up some examples.
+
 ><b>Updated (6/17/17 v1.3)</b><br>
 * Uses less flash now.
 

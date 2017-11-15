@@ -40,7 +40,9 @@ volatile float frequency;
 String input;
 // what version of fft is being displayed
 enum fft_version_t { OPTIMIZED, STANDARD } FFT_VERSION;
-
+// number fft bins to print
+const uint16_t numOfBins = 30;
+//---------------------------------------------------------------------------------------
 void playNote(void) {
   string.noteOn(frequency, .8);
   digitalWriteFast(LED_BUILTIN, !digitalReadFast(LED_BUILTIN));
@@ -101,7 +103,7 @@ void loop() {
 
   if (optfft.available() && FFT_VERSION == OPTIMIZED) {
     Serial.printf("OPT FFT USAGE: %.2f |\t\t:", pusageOpt);
-    for (i = 0; i < 30; i++) {
+    for (i = 0; i < numOfBins; i++) {
       n = optfft.read(i);
       if (n >= 0.01) {
         Serial.print(n);
@@ -114,7 +116,7 @@ void loop() {
 
   if (stdfft.available() && FFT_VERSION == STANDARD) {
     Serial.printf("STD FFT USAGE: %.2f |\t\t:", pusageStd);
-    for (i = 0; i < 30; i++) {
+    for (i = 0; i < numOfBins; i++) {
       n = stdfft.read(i);
       if (n >= 0.01) {
         Serial.print(n);
